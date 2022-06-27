@@ -20,10 +20,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
     image.insertAdjacentHTML('afterbegin', `<img src="${value.imageUrl}" alt="${value.altTxt}">`);
     document.getElementById("title").textContent = value.name;
     document.getElementById("price").textContent = value.price;
-    document.getElementById("description").textContent = value.description;
-    
-
-/* Mise en place d'une RegEx et d'un validateur de données pour ne passer */    
+    document.getElementById("description").textContent = value.description;  
 
     
 
@@ -31,6 +28,7 @@ fetch(`http://localhost:3000/api/products/${productId}`)
     
     
     let colors = value.colors;
+
     
     colors.forEach(choice => {
 /* Création de la balise option pour y intégrer le choix de la couleur */
@@ -39,7 +37,8 @@ fetch(`http://localhost:3000/api/products/${productId}`)
         option.textContent = choice;
         }
     );
-    
+      
+
 /* Mise en place du LocalStorage pour récupérer les éléments de la page cart */
 
 let productStorage = document.querySelector("#addToCart");
@@ -62,35 +61,39 @@ function addItem(e) {
         id: value._id,
         quantity: Number(quantity.value), 
         color: value.colors,
-        name: value.name,
-        price: value.price,
-        image: value.imageUrl,
-        altTxt: value.altTxt,
     }
 
     productItem.color = document.querySelector("#colors").value;
+
+    console.log(productItem.quantity);
     
+    if(parseInt(productItem.quantity) < 1 || parseInt(productItem.quantity) > 100)
+    {alert("Entrer un nombre entre 1 et 100")}; 
 
 /* Déclaration de la variable qui contient les keys et values enregistrées dans le LocalStorage et 
 * conversion des données JSON en objet Javascript avec la methode JSON.parse
 */
 
     let productInLocalStorage = JSON.parse(localStorage.getItem("cart"));
-
+    console.log(productInLocalStorage);
 /* Si il y a des produits dans le LocalStorage, on ajoute les valeurs du nouveau produit au lieu de
 * remplacer la valeur existante
 */
-    if (productInLocalStorage) {
+
+    if (productInLocalStorage == null) {
+        productInLocalStorage = [];
         productInLocalStorage.push(productItem);
         localStorage.setItem("cart", JSON.stringify(productInLocalStorage));
+        alert("Le produit a bien été ajouté au panier !")
+        
     } 
 /* Si il n y a pas de produits dans le LocalStorage, on ajoute un nouveau tableau avec les valeurs de
 * productItem pour les ajouter au LocalStorage
 */  
     else {
-        productInLocalStorage = [];
         productInLocalStorage.push(productItem);
         localStorage.setItem("cart", JSON.stringify(productInLocalStorage));
+        alert("Le produit a bien été ajouté au panier !")
     }
 
 }
