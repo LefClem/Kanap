@@ -97,6 +97,7 @@ const displayTotalPrice = () => {
       totalPrice += productInLocalStorage[i].quantity * realProduct.price;  
       let totalPriceDisplay = document.querySelector("#totalPrice");
       totalPriceDisplay.textContent = totalPrice;
+
     } 
 }
 
@@ -116,7 +117,6 @@ const displaytotalQuantity = () => {
     }
     
   document.querySelector("#totalQuantity").textContent = totalQuantity;
-  console.log(totalQuantity);
 }
 
 // Fonction permettant de changer le nombre de chaque produit contenu dans le panier
@@ -161,27 +161,33 @@ const setupChange = (localStorageId, input, alertMsg) => {
 }
 
 // Fonction permettant de supprimer un produit du panier via le bouton supprimer
-/*const deleteItem = (localStorageId) => {
+const deleteItem = (localStorageId) => {
 
   let deleteButton = document.querySelector(".deleteItem");
-    deleteButton.addEventListener("click", function (e){
-      e.preventDefault();
-
-      let idDelete = localStorageId.id;
-      let colorDelete = localStorageId.color;
-      console.log(colorDelete);
-
-      productInLocalStorage = productInLocalStorage.filter( el => el.id !== idDelete && el.color !== colorDelete)
-
-      localStorage.setItem("cart", JSON.stringify(productInLocalStorage));
-      location.reload();
-    })
-    
-}*/
-
-function deleteItem(item){
-  const div = document.querySelector("cart__item__content__settings__delete")
+    deleteButton.addEventListener("click", () => {clickToDelete(localStorageId)})
 }
+
+// Fonction callback de l'addEventListener 
+function clickToDelete(localStorageId){
+  dataToDelete(localStorageId)
+  displayTotalPrice();
+  displaytotalQuantity();
+  articleToDelete(localStorageId);
+}
+
+function dataToDelete(localStorageId){
+  let idDelete = localStorageId.id;
+  let colorDelete = localStorageId.color;
+  productInLocalStorage = productInLocalStorage.filter( el => (el.id !== idDelete && el.color !== colorDelete) || (el.id === idDelete && el.color !== colorDelete))
+  localStorage.setItem("cart", JSON.stringify(productInLocalStorage));
+}
+
+function articleToDelete(localStorageId){
+  const article = document.querySelector(`article[data-id="${localStorageId.id}"][data-color="${localStorageId.color}"]`);
+  article.remove();
+  emptyBasket();
+}
+
 
 let form = document.querySelector(".cart__order__form");
 
