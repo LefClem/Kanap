@@ -1,29 +1,23 @@
-/* Récupération des données de l'API */
+import { getItems } from "./api.js";
 
-const url = 'http://localhost:3000/api/products';
-
-fetch(url)
-.then((response) => {
-    const productsData = response.json(); 
-    //let products = document.querySelector("#items");
-    
-/* Boucle For pour automatiser la création des cards */    
-    productsData.then((value) => {
-        for(let i = 0; i < value.length; i++){
-            // Ajout de l'id à l'URL de la page product pour récupérer les informations de l'API
-            const script = `<a href="./product.html?id=${value[i]._id}">
-            <article>
-            <img src="${value[i].imageUrl}" alt="${value[i].altTxt}">
-            <h3 class="productName">${value[i].name}</h3>
-            <p class="productDescription">${value[i].description}</p>
-            </article>
+function displayItems(items) {
+    items.forEach(elem => {
+        const html = `<a href="./product.html?id=${elem.id}">
+        <article>
+        <img src="${elem.image}" alt="${elem.imageDescription}">
+        <h3 class="productName">${elem.name}</h3>
+        <p class="productDescription">${elem.description}</p>
+        </article>
         </a>`;
-        //Insertion du HTML avec la méthode insertAdjacentHTML
-        let products = document.querySelector("#items");
-        products.insertAdjacentHTML("beforeend", script);
+        document.getElementById("items").insertAdjacentHTML("afterbegin", html)
+    });
+}
 
-        }
-    })
-})
-.catch((err) => {console.log("Erreur :" + err)});
+
+async function init() {
+    const items = await getItems();
+    displayItems(items);
+}
+
+init();
 

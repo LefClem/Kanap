@@ -8,4 +8,4 @@ const displayOrderId = document.querySelector("#orderId");
 displayOrderId.innerText = id;
 
 // Suppression des items contenu dans le localstorage
-localStorage.clear();
+localStorage.removeItem("cart");
