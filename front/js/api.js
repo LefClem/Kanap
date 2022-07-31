@@ -1,62 +1,47 @@
-import { Product } from "./Classes/Product.js";
-import { Cart } from "./Classes/Cart.js";
+// Function to post the form data and the cart Ids to the API
+export function postMethod(order) {
 
-export async function postToApi(order) {
-
-  // Déclaration de l'objet contenant la méthode POST
-  let options = {
+  let options = fetch('http://localhost:3000/api/products/order', {
     method: 'POST',
     body: JSON.stringify(order),
     headers: {
       "Content-Type": "application/json",
     }
-  };
+  });
 
-  // Envoi de l'objet order avec la méthode POST
-  fetch('http://localhost:3000/api/products/order', options)
-    .then((res) => res.json())
-    .then((data) => {
-      //Vider le panier des produits par clés 
-      // Suppression de la donnée product contenu dans l'objet order pour conserver les données du formulaire
-      delete order.products;
-
-      // Ajout l'orderId à l'url pour le retourner sur la page confirmation.html
-      document.location.href = 'confirmation.html?orderId=' + data.orderId
-    })
-    .catch((err) => {
-      alert('Erreur: ' + err.message);
-    });
+  options.then(async (res) => {
+    try {
+      const content = await res.json();
+      document.location.href = 'confirmation.html?orderId=' + content.orderId
+    } catch (error) {
+      displayErrorMessage(error);
+    }
+  })
 }
 
-export const getItems = async () => {
+// Function to collect the kanap from the API and return them to the JSON format
+export const getKanapList = async () => {
   try {
-    const res = await (await fetch('http://localhost:3000/api/products/')).json();    
-    const items = [];
-    res.forEach(item => {
-      const product = new Product(item._id, item.name, item.description, item.imageUrl, item.altTxt, item.colors, item.price);
-      items.push(product)
-    });
-    return items;
+    const res = await fetch('http://localhost:3000/api/products');
+    return res.json();
   } catch (error) {
-    console.log(error);
+    displayErrorMessage(error);  
   }
 }
 
-export const getItemsProductPage = async (id) => {
+// Function to collect the kanap from the API for a specific product and return them to the JSON format
+export const getKanap = async (id) => {
   try {
-    const item = await (await fetch(`http://localhost:3000/api/products/${id}`)).json();    
-    return new Product(item._id, item.name, item.description, item.imageUrl, item.altTxt, item.colors, item.price);
+    const res = await fetch(`http://localhost:3000/api/products/${id}`);    
+    return res.json();
   } catch (error) {
-    console.log(error);
+    displayErrorMessage(error);    
   }
 }
 
-export const getCart = async () => {
-  try {
-  const product = await (await fetch(`http://localhost:3000/api/products/`)).json();
-  const localStorage = new Cart();
-  return localStorage, product;
-  } catch (error) {
-    console.log("Message d'erreur " + error)
-  }
+// Function to display an error message in case of the catch
+export function displayErrorMessage(error) {
+  let message = document.querySelector("section");
+  let alert = document.createElement("p").textContent = error;
+  message.insertAdjacentHTML("beforebegin", alert);
 }

@@ -1,11 +1,22 @@
-// Méthode SearchParams pour récupérer l'id du produit dans l'URL 
+// Function to display the orderId on my page
+function displayOrderIdInDom() {
+  let orderId = new URL(window.location.href).searchParams;
+  let id = orderId.get("orderId");
 
-let orderId = new URL(window.location.href).searchParams;
-let id = orderId.get('orderId');
+  const displayOrderId = document.querySelector("#orderId");
+  displayOrderId.innerText = id;
+}
 
-// Affichage de l'orderId sur la page
-const displayOrderId = document.querySelector("#orderId");
-displayOrderId.innerText = id;
+// Function to clear the local storage
+function clearLocalStorage() {
+  localStorage.removeItem("cart");
+}
 
-// Suppression des items contenu dans le localstorage
-localStorage.removeItem("cart");
+// function init to call the functions inside my confirmation page
+function init() {
+  displayOrderIdInDom();
+  clearLocalStorage();
+}
+
+// Call the init function
+init();
